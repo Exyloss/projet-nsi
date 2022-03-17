@@ -1,18 +1,31 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <title>File Upload</title>
 </head>
 <body>
-    <form action = "/display" method = "POST" 
-         enctype = "multipart/form-data">
-         <input type = "file" name = "file" />
-         <br><br>
-         <input type = "submit"/>
-         <input type = "reset"/>
-      </form>  
+    <form action = "/add" method = "POST" enctype = "multipart/form-data">
+        <input type = "file" name = "file" />
+        <br><br>
+        <input type = "submit" />
+        <input type = "reset" />
+    </form>
+    <ul class="items">
+        {% for item in files %}
+        <li class="item">
+            <p class="item_name">{{item}} </p>
+            <a class="delete" href="/remove/{{item}}">
+                <img src="{{ url_for('static', filename='trash.png') }}" width="15px" height="15px"></img>
+            </a>
+            <a class="download" href="/download/{{item}}">
+                <img src="{{ url_for('static', filename='download.png') }}" width="15px" height="15px"></img>
+            </a>
+        </li>
+        {% endfor %}
+    </ul>
 </body>
 </html>

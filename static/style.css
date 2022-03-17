@@ -1,0 +1,19 @@
+.delete {
+    display: inline-block;
+    vertical-align: left;
+}
+
+.download {
+    display: inline-block;
+    vertical-align: left;
+}
+
+.item_name {
+    display: inline-block;
+    vertical-align: left;
+    margin-right: 10px;
+}
+
+.items {
+    list-style: none;
+}
