@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <meta charset="utf-8">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <title></title>
+    </head>
+    <body>
+        <ul class="items">
+            {% for item in res %}
+            <li class="item">
+                <a class="item_name" href="/edit/{{ item }}">{{ item }}</a>
+                <a class="delete" href="/remove/{{item}}">
+                    <img src="{{ url_for('static', filename='trash.png') }}" width="15px" height="15px"></img>
+                </a>
+                <a class="download" href="/download/{{item}}">
+                    <img src="{{ url_for('static', filename='download.png') }}" width="15px" height="15px"></img>
+                </a>
+            </li>
+            {% endfor %}
+        </ul>
+    </body>
+</html>

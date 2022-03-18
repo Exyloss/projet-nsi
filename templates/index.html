@@ -8,6 +8,10 @@
     <title>File Upload</title>
 </head>
 <body>
+    <form action="/search" method="POST">
+        <input type="text" placeholder="Recherche..." name="sb"/>
+        <button type="submit" value="submit">Rechercher</button>
+    </form>
     <form action = "/add" method = "POST" enctype = "multipart/form-data">
         <input type = "file" name = "file" />
         <br><br>
@@ -25,6 +29,11 @@
                 <img src="{{ url_for('static', filename='download.png') }}" width="15px" height="15px"></img>
             </a>
         </li>
+        <form action="/" method="POST">
+            <p>Êtes-vous sûr de vouloir supprimer ce fichier ?</p>
+            <button name="oui" value="y" type="submit">Oui</button>
+            <button name="non" value="n" type="submit">Non</button>
+        </form>
         {% endfor %}
     </ul>
 </body>

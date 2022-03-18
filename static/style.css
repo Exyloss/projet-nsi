@@ -22,3 +22,13 @@
     height: 500px;
     width: 1000px;
 }
+
+.item_name {
+    text-decoration: none;
+    color: black;
+}
+
+.item_name:hover {
+    color: #232323;
+    text-decoration: underline;
+}

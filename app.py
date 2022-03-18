@@ -1,10 +1,10 @@
 from flask import Flask, render_template, request, send_file
 from werkzeug.utils import secure_filename
-from wtforms import SubmitField
 import os
 
 app = Flask(__name__)
 
+os.system("mkdir uploads")
 app.config["UPLOAD_FOLDER"] = "uploads/"
 
 def list_files():
@@ -15,12 +15,12 @@ def list_files():
 
 
 @app.route('/')
-def upload_file():
+def index():
     return render_template('index.html', files=list_files())
 
 
 @app.route('/add', methods = ['GET', 'POST'])
-def save_file():
+def upload_file():
     if request.method == 'POST':
         f = request.files['file']
         filename = secure_filename(f.filename)
@@ -55,7 +55,7 @@ def edit_file(name):
     return render_template('editor.html', file_content=file_content, file_name=name)
 
 @app.route('/save/<name>', methods = ["POST"])
-def save_file2(name):
+def save_file(name):
     if request.method == "POST":
         content = request.form['ta']
         print(content)
@@ -63,6 +63,22 @@ def save_file2(name):
         file.write(content)
         file.close()
         return render_template('editor.html', file_name=name, file_content=content)
+
+@app.route('/search', methods = ["POST"])
+def search_file():
+    if request.method == "POST":
+        search = request.form['sb']
+        print(search)
+        res=[]
+        files = list_files()
+        for i in files:
+            if search in i:
+                res.append(i)
+        print(res)
+        return render_template('results.html', res=res)
+    else:
+        return render_template('index.html')
+
 
 if __name__ == '__main__':
     app.run(host="0.0.0.0", port=5000, debug = True)
