@@ -17,7 +17,7 @@
     <ul class="items">
         {% for item in files %}
         <li class="item">
-            <p class="item_name">{{item}} </p>
+            <a class="item_name" href="/edit/{{ item }}">{{ item }}</a>
             <a class="delete" href="/remove/{{item}}">
                 <img src="{{ url_for('static', filename='trash.png') }}" width="15px" height="15px"></img>
             </a>

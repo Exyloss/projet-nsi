@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <meta charset="utf-8">
+        <title>Éditeur</title>
+    </head>
+    <body>
+    <form method="post" action="/save/{{ file_name }}">
+        <div>
+            <label for="msg">{{ file_name }}</label><br>
+            <textarea id="content" name="ta">{{ file_content }}</textarea><br>
+        </div>
+        <div>
+            <button type="submit" class="btn">Sauvegarder</button>
+            <a href="/">Annuler</a>
+        </div>
+    </form>
+    </body>
+</html>

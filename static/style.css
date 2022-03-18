@@ -17,3 +17,8 @@
 .items {
     list-style: none;
 }
+
+#content {
+    height: 500px;
+    width: 1000px;
+}
