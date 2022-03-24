@@ -5,18 +5,20 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{url_for('static', filename='script.js')}}"></script>
     <title>File Upload</title>
 </head>
 <body>
-    <form action="/search" method="POST">
-        <input type="text" placeholder="Recherche..." name="sb"/>
-        <button type="submit" value="submit">Rechercher</button>
+    <div id="search">
+    <form action="/search" method="POST" id="form_file">
+        <input type="text" placeholder="Recherche..." name="sb" id="search_input" />
+        <button type="submit" value="submit" id="submit_query">Rechercher</button>
     </form>
+    </div>
     <form action = "/add" method = "POST" enctype = "multipart/form-data">
-        <input type = "file" name = "file" />
-        <br><br>
-        <input type = "submit" />
-        <input type = "reset" />
+        <button style="display:block;" onclick="document.getElementById('getFile').click()">Fichiers</button>
+        <input type = "file" name = "files[]" id="getFile" multiple="true" required autocomplete="off" style="display:none"/>
+        <button type = "submit" >Envoyer</button>
     </form>
     <ul class="items">
         {% for item in files %}
@@ -29,11 +31,6 @@
                 <img src="{{ url_for('static', filename='download.png') }}" width="15px" height="15px"></img>
             </a>
         </li>
-        <form action="/" method="POST">
-            <p>Êtes-vous sûr de vouloir supprimer ce fichier ?</p>
-            <button name="oui" value="y" type="submit">Oui</button>
-            <button name="non" value="n" type="submit">Non</button>
-        </form>
         {% endfor %}
     </ul>
 </body>

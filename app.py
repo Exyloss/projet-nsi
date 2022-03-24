@@ -22,18 +22,16 @@ def index():
 @app.route('/add', methods = ['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
-        f = request.files['file']
-        filename = secure_filename(f.filename)
-
-        f.save(app.config['UPLOAD_FOLDER'] + filename)
-
-        file = open(app.config['UPLOAD_FOLDER'] + filename,"r")
-        try:
-            content = file.read()
-        except:
-            content = "Contenu impossible à afficher."
-
-        os.system("echo \""+content+"\" > "+"uploads/"+filename)
+        files = request.files.getlist("files[]")
+        for f in files:
+            filename = secure_filename(f.filename)
+            f.save(app.config['UPLOAD_FOLDER'] + filename)
+            file = open(app.config['UPLOAD_FOLDER'] + filename,"r")
+            try:
+                content = file.read()
+                os.system("echo \""+content+"\" > "+"uploads/"+filename)
+            except:
+                print("erreur lors de la lecture du fichier.")
 
     return render_template('index.html', files=list_files())
 
