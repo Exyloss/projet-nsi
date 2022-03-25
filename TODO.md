@@ -1,0 +1,3 @@
+ - Utilisation de dossiers
+ - Site responsive
+ - Thème sombre automatique

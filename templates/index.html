@@ -16,19 +16,37 @@
     </form>
     </div>
     <form action = "/add" method = "POST" enctype = "multipart/form-data">
-        <button style="display:block;" onclick="document.getElementById('getFile').click()">Fichiers</button>
-        <input type = "file" name = "files[]" id="getFile" multiple="true" required autocomplete="off" style="display:none"/>
+        <input type = "file" name = "files[]" id="getFile" multiple="true" required autocomplete="off" />
+        <br>
         <button type = "submit" >Envoyer</button>
     </form>
+    <form action = "/newfolder" method = "POST">
+        <input type = "text" name = "folder_input" placeholder="Nouveau dossier" />
+        <button type = "submit" >Créer</button>
+    </form>
     <ul class="items">
+        <li class="item">
+            <p class="item_name">Emplacement acutel : {{ path }}</p>
+        </li>
+        <li class="item">
+            <a class="item_name" href="/return">Répertoire précédent</a>
+        </li>
         {% for item in files %}
         <li class="item">
-            <a class="item_name" href="/edit/{{ item }}">{{ item }}</a>
+            <a class="item_name" href="/edit/{{ item }}"><img class="folder" src="{{ url_for('static', filename='document.png') }}"></img>{{ item }}</a>
             <a class="delete" href="/remove/{{item}}">
                 <img src="{{ url_for('static', filename='trash.png') }}" width="15px" height="15px"></img>
             </a>
             <a class="download" href="/download/{{item}}">
                 <img src="{{ url_for('static', filename='download.png') }}" width="15px" height="15px"></img>
+            </a>
+        </li>
+        {% endfor %}
+        {% for item in folders %}
+        <li class="item">
+            <a class="item_name" href="/goto/{{ item }}"><img class="folder" src="{{ url_for('static', filename='folder.png') }}"></img>{{ item }}</a>
+            <a class="delete" href="/remove/{{item}}">
+                <img src="{{ url_for('static', filename='trash.png') }}" width="15px" height="15px"></img>
             </a>
         </li>
         {% endfor %}
