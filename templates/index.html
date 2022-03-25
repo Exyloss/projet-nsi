@@ -33,20 +33,22 @@
         </li>
         {% for item in files %}
         <li class="item">
-            <a class="item_name" href="/edit/{{ item }}"><img class="folder" src="{{ url_for('static', filename='document.png') }}"></img>{{ item }}</a>
+            <img class="folder" src="{{ url_for('static', filename='document.png') }}"></img>
+            <a class="item_name" href="/edit/{{ item }}">{{ item }}</a>
             <a class="delete" href="/remove/{{item}}">
-                <img src="{{ url_for('static', filename='trash.png') }}" width="15px" height="15px"></img>
+                <img src="{{ url_for('static', filename='trash.png') }}" width="20px" height="20px"></img>
             </a>
             <a class="download" href="/download/{{item}}">
-                <img src="{{ url_for('static', filename='download.png') }}" width="15px" height="15px"></img>
+                <img src="{{ url_for('static', filename='download2.png') }}" width="20px" height="20px"></img>
             </a>
         </li>
         {% endfor %}
         {% for item in folders %}
         <li class="item">
-            <a class="item_name" href="/goto/{{ item }}"><img class="folder" src="{{ url_for('static', filename='folder.png') }}"></img>{{ item }}</a>
+            <img class="folder" src="{{ url_for('static', filename='folder.png') }}"></img>
+            <a class="item_name" href="/goto/{{ item }}">{{ item }}</a>
             <a class="delete" href="/remove/{{item}}">
-                <img src="{{ url_for('static', filename='trash.png') }}" width="15px" height="15px"></img>
+                <img src="{{ url_for('static', filename='trash.png') }}" width="20px" height="20px"></img>
             </a>
         </li>
         {% endfor %}
