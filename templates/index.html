@@ -26,14 +26,16 @@
     </form>
     <ul class="items">
         <li class="item">
-            <p class="item_name">Emplacement acutel : {{ path }}</p>
+            <p class="path">Emplacement acutel : {{ path }}</p>
         </li>
         <li class="item">
             <a class="item_name" href="/return">Répertoire précédent</a>
         </li>
         {% for item in files %}
         <li class="item">
-            <img class="folder" src="{{ url_for('static', filename='document.png') }}"></img>
+            <a style="align: middle;">
+                <img class="folder" src="{{ url_for('static', filename='document.png') }}"></img>
+            </a>
             <a class="item_name" href="/edit/{{ item }}">{{ item }}</a>
             <a class="delete" href="/remove/{{item}}">
                 <img src="{{ url_for('static', filename='trash.png') }}" width="20px" height="20px"></img>
@@ -45,7 +47,9 @@
         {% endfor %}
         {% for item in folders %}
         <li class="item">
-            <img class="folder" src="{{ url_for('static', filename='folder.png') }}"></img>
+            <a style="align: middle;">
+                <img class="folder" src="{{ url_for('static', filename='folder.png') }}"></img>
+            </a>
             <a class="item_name" href="/goto/{{ item }}">{{ item }}</a>
             <a class="delete" href="/remove/{{item}}">
                 <img src="{{ url_for('static', filename='trash.png') }}" width="20px" height="20px"></img>

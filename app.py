@@ -17,7 +17,7 @@ def list_files():
     print(ls_f)
     ls_d = list(filter(os.path.isdir, os.listdir(".")))
     print(ls_d)
-    return [ls_f, ls_d]
+    return (ls_f, ls_d)
 
 @app.route('/')
 def index():
@@ -33,21 +33,16 @@ def upload_file():
             file = open(app.config['UPLOAD_FOLDER']+"/"+filename,"rb")
             if True:
                 content = file.read()
-                #print(content)
-                #os.system("touch "+os.getcwd()+"/"+filename)
-                #os.system("echo "+content+" > "+os.getcwd()+"/"+filename)
                 file = open(os.getcwd()+"/"+filename, "wb")
                 file.write(content)
                 file.close()
             else:
                 print("erreur lors de la lecture du fichier.")
-    #return render_template('index.html', files=list_files())
     return redirect("/")
 
 @app.route('/remove/<name>')
 def remove_file(name):
     os.system("rm -rf "+os.getcwd()+"/"+name)
-    #return render_template('index.html', files=list_files())
     return redirect("/")
 
 @app.route('/download/<name>')
