@@ -11,17 +11,19 @@ except:
 
 os.chdir("uploads")
 app.config["UPLOAD_FOLDER"] = os.getcwd()
+default_dir = os.getcwd()
 
 def list_files():
-    ls_f = list(filter(os.path.isfile, os.listdir(".")))
-    print(ls_f)
-    ls_d = list(filter(os.path.isdir, os.listdir(".")))
-    print(ls_d)
-    return (ls_f, ls_d)
+    #ls_f = list(filter(os.path.isfile, os.listdir(".")))
+    #ls_d = list(filter(os.path.isdir, os.listdir(".")))
+    return ( list(filter(os.path.isfile, os.listdir("."))), list(filter(os.path.isdir, os.listdir("."))) )
 
 @app.route('/')
 def index():
-    return render_template('index.html', files=list_files()[0], folders=list_files()[1], path=os.getcwd())
+    items = list_files()
+    path_show = os.getcwd().replace(default_dir, "")
+    if path_show == "": path_show = "/"
+    return render_template('index.html', files=items[0], folders=items[1], path=path_show)
 
 @app.route('/add', methods = ['GET', 'POST'])
 def upload_file():
@@ -51,7 +53,6 @@ def download_file(name):
 
 @app.route('/edit/<name>')
 def edit_file(name):
-    print(name)
     try:
         file = open(os.getcwd()+"/"+name, "r")
         file_content = file.read()
@@ -113,10 +114,10 @@ def goto_folder(folder):
 
 @app.route('/return')
 def return_folder():
-    if os.getcwd() != "/home/antonin/prog/projet-nsi/uploads":
+    if os.getcwd() != default_dir:
         os.chdir("..")
         app.config["UPLOAD_FOLDER"] = os.getcwd()
     return redirect("/")
 
-if __name__ == '__main__':
-    app.run(host="0.0.0.0", port=5000, debug = True)
+if __name__ == "__main__":
+    app.run(host="0.0.0.0", port=80, debug = True)
