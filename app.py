@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, send_file, redirect
 from werkzeug.utils import secure_filename
 import os
+from zipfile import ZipFile
+from pathlib import Path
 
 app = Flask(__name__)
 
@@ -9,13 +11,20 @@ try:
 except:
     print("Dossier déjà créé.")
 
+zip_dir = os.getcwd()+"/zips/"
 os.chdir("uploads")
 app.config["UPLOAD_FOLDER"] = os.getcwd()
 default_dir = os.getcwd()
 
+def get_files(directory):
+    file_paths = []
+    for root, directories, files in os.walk(directory):
+        for filename in files:
+            filepath = os.path.join(root, filename)
+            file_paths.append(filepath)
+    return file_paths
+
 def list_files():
-    #ls_f = list(filter(os.path.isfile, os.listdir(".")))
-    #ls_d = list(filter(os.path.isdir, os.listdir(".")))
     return ( list(filter(os.path.isfile, os.listdir("."))), list(filter(os.path.isdir, os.listdir("."))) )
 
 @app.route('/')
@@ -50,6 +59,14 @@ def remove_file(name):
 @app.route('/download/<name>')
 def download_file(name):
     return send_file(os.getcwd()+"/"+name, as_attachment = True)
+
+@app.route('/folder_dl/<folder>')
+def download_folder(folder):
+    #files = get_files(folder)
+    #os.popen("touch "+zip_dir+folder+".zip")
+    os.popen("zip -r "+zip_dir+folder+".zip "+os.getcwd()+"/"+"folder")
+    return send_file(zip_dir+folder+".zip", as_attachment = True)
+
 
 @app.route('/edit/<name>')
 def edit_file(name):
@@ -86,7 +103,6 @@ def save_file(name):
 def search_file():
     if request.method == "POST":
         search = request.form['sb']
-        print(search)
         res=[]
         res2=[]
         files = list_files()[0]
@@ -97,8 +113,9 @@ def search_file():
         for i in folders:
             if search in i:
                 res2.append(i)
-        print(res)
-        return render_template('index.html', files=res, folders=res2, path=os.getcwd())
+        path_show = os.getcwd().replace(default_dir, "")
+        if path_show == "": path_show = "/"
+        return render_template('index.html', files=res, folders=res2, path=path_show)
     else:
         return redirect("/")
 

@@ -4,15 +4,17 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{url_for('static', filename='script.js')}}"></script>
     <title>File Upload</title>
 </head>
 <body>
     <div id="search">
-    <form action="/search" method="POST" id="form_file">
+    <form action="/search" method="POST">
+        <button id="submit_query"><i class="fa-house"></i></button>
         <input type="text" placeholder="Recherche..." name="sb" id="search_input" />
-        <button type="submit" value="submit" id="submit_query">Rechercher</button>
+        <button type="submit" id="submit_query"><i class="fa fa-search"></i></button>
     </form>
     </div>
     <form action = "/add" method = "POST" enctype = "multipart/form-data">
@@ -31,6 +33,20 @@
         <li class="item">
             <a class="item_name" href="/return">Répertoire précédent</a>
         </li>
+        {% for item in folders %}
+        <li class="item">
+            <a style="align: middle;">
+                <img class="folder" src="{{ url_for('static', filename='folder.png') }}"></img>
+            </a>
+            <a class="item_name" href="/goto/{{ item }}">{{ item }}</a>
+            <a class="delete" href="/remove/{{item}}">
+                <img src="{{ url_for('static', filename='trash.png') }}" width="20px" height="20px"></img>
+            </a>
+            <a class="download" href="/folder_dl/{{item}}">
+                <img src="{{ url_for('static', filename='download2.png') }}" width="20px" height="20px"></img>
+            </a>
+        </li>
+        {% endfor %}
         {% for item in files %}
         <li class="item">
             <a style="align: middle;">
@@ -42,17 +58,6 @@
             </a>
             <a class="download" href="/download/{{item}}">
                 <img src="{{ url_for('static', filename='download2.png') }}" width="20px" height="20px"></img>
-            </a>
-        </li>
-        {% endfor %}
-        {% for item in folders %}
-        <li class="item">
-            <a style="align: middle;">
-                <img class="folder" src="{{ url_for('static', filename='folder.png') }}"></img>
-            </a>
-            <a class="item_name" href="/goto/{{ item }}">{{ item }}</a>
-            <a class="delete" href="/remove/{{item}}">
-                <img src="{{ url_for('static', filename='trash.png') }}" width="20px" height="20px"></img>
             </a>
         </li>
         {% endfor %}
