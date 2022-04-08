@@ -1,3 +1,3 @@
- - Utilisation de dossiers
  - Site responsive
  - Thème sombre automatique
+ - Système de login avec BDD

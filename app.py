@@ -1,8 +1,6 @@
 from flask import Flask, render_template, request, send_file, redirect
 from werkzeug.utils import secure_filename
 import os
-from zipfile import ZipFile
-from pathlib import Path
 
 app = Flask(__name__)
 
@@ -42,12 +40,12 @@ def upload_file():
             filename = secure_filename(f.filename)
             f.save(app.config['UPLOAD_FOLDER']+"/"+filename)
             file = open(app.config['UPLOAD_FOLDER']+"/"+filename,"rb")
-            if True:
+            try:
                 content = file.read()
                 file = open(os.getcwd()+"/"+filename, "wb")
                 file.write(content)
                 file.close()
-            else:
+            except:
                 print("erreur lors de la lecture du fichier.")
     return redirect("/")
 
@@ -63,7 +61,7 @@ def download_file(name):
 @app.route('/folder_dl/<folder>')
 def download_folder(folder):
     #files = get_files(folder)
-    #os.popen("touch "+zip_dir+folder+".zip")
+    os.popen("touch "+zip_dir+folder+".zip")
     os.popen("zip -r "+zip_dir+folder+".zip "+os.getcwd()+"/"+"folder")
     return send_file(zip_dir+folder+".zip", as_attachment = True)
 
@@ -86,7 +84,7 @@ def new_folder():
         try:
             os.mkdir(folder_name)
         except:
-            print("Erreur lors de la création du dossier.")
+            print("Erreur")
     return redirect("/")
 
 @app.route('/save/<name>', methods = ["POST"])
@@ -136,5 +134,11 @@ def return_folder():
         app.config["UPLOAD_FOLDER"] = os.getcwd()
     return redirect("/")
 
+@app.route('/rename/<name>/<newname>')
+def rename(name, newname):
+    if not os.path.isfile(os.getcwd()+newname):
+        os.popen("mv "+name+" "+newname)
+    return redirect("/")
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80, debug = True)
+    app.run(host="0.0.0.0", port=80, debug = True, threaded=True)

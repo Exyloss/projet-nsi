@@ -45,6 +45,9 @@
             <a class="download" href="/folder_dl/{{item}}">
                 <img src="{{ url_for('static', filename='download2.png') }}" width="20px" height="20px"></img>
             </a>
+            <a class="download" href="/">
+                <img src="{{ url_for('static', filename='rename.png') }}" width="20px" height="20px"></img>
+            </a>
         </li>
         {% endfor %}
         {% for item in files %}
@@ -58,6 +61,9 @@
             </a>
             <a class="download" href="/download/{{item}}">
                 <img src="{{ url_for('static', filename='download2.png') }}" width="20px" height="20px"></img>
+            </a>
+            <a class="download" href="/">
+                <img src="{{ url_for('static', filename='rename.png') }}" width="20px" height="20px"></img>
             </a>
         </li>
         {% endfor %}
