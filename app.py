@@ -1,18 +1,38 @@
-from flask import Flask, render_template, request, send_file, redirect
+from flask import Flask, render_template, request, send_file, redirect, session
+from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 import os
+import chemin
+import bdd
 
 app = Flask(__name__)
+bcrypt = Bcrypt(app)
 
 try:
     os.mkdir("uploads")
 except:
     print("Dossier déjà créé.")
 
+app.secret_key = "123"
+
+db_path = os.getcwd()+"/test.db"
 zip_dir = os.getcwd()+"/zips/"
 os.chdir("uploads")
 app.config["UPLOAD_FOLDER"] = os.getcwd()
 default_dir = os.getcwd()
+
+def correct_username(un):
+    good_char = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+    if bdd.exists(un, db_path):
+        return "Erreur, le nom d'utilisateur est déjà prit."
+    if len(un) > 12:
+        return "Erreur, le nom d'utilisateur est trop long."
+
+    for i in un:
+        if not i in good_char:
+            return "Erreur, vous avez saisi des caractères invalides."
+    return True
+
 
 def get_files(directory):
     file_paths = []
@@ -22,15 +42,60 @@ def get_files(directory):
             file_paths.append(filepath)
     return file_paths
 
-def list_files():
-    return ( list(filter(os.path.isfile, os.listdir("."))), list(filter(os.path.isdir, os.listdir("."))) )
+def list_files(chemin):
+    return ( list(filter(os.path.isfile, os.listdir(chemin))), list(filter(os.path.isdir, os.listdir(chemin))) )
 
+@app.route('/')
+def index():
+    if 'username' in session:
+        path_show = session["chemin"].replace(session["default_dir"], "")
+        items = list_files(session["chemin"])
+        if path_show == "": path_show = "/"
+        return render_template('index.html', files=items[0], folders=items[1], path=path_show)
+    return redirect("/login")
+
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    if request.method == "POST":
+        pw_hash = bdd.get_password(request.form["username"], db_path)
+        if bcrypt.check_password_hash(pw_hash, request.form["password"]):
+            #session["chemin"] = default_dir
+            session["username"] = request.form["username"]
+            session["chemin"] = chemin.chdir(default_dir, session["username"])
+            session["default_dir"] = chemin.chdir(default_dir, session["username"])
+            return redirect("/")
+    return render_template("login.html")
+
+@app.route("/register", methods=["GET", "POST"])
+def register():
+    global db
+    if request.method == "POST":
+        if correct_username(request.form["username"]) == True:
+            try:
+                os.mkdir(request.form["username"])
+            except:
+                print("Erreur lors de la création du dossier.")
+            session["username"] = request.form["username"]
+            pw_hash = bcrypt.generate_password_hash(request.form["password"]).decode("utf-8")
+            bdd.insert(session["username"], pw_hash, db_path)
+            session["chemin"] = chemin.chdir(default_dir, session["username"])
+            session["default_dir"] = chemin.chdir(default_dir, session["username"])
+            return redirect("/")
+    return render_template("login.html")
+
+@app.route('/logout')
+def logout():
+    session.pop('username', None)
+    return redirect("/")
+
+"""
 @app.route('/')
 def index():
     items = list_files()
     path_show = os.getcwd().replace(default_dir, "")
     if path_show == "": path_show = "/"
     return render_template('index.html', files=items[0], folders=items[1], path=path_show)
+"""
 
 @app.route('/add', methods = ['GET', 'POST'])
 def upload_file():
@@ -42,7 +107,7 @@ def upload_file():
             file = open(app.config['UPLOAD_FOLDER']+"/"+filename,"rb")
             try:
                 content = file.read()
-                file = open(os.getcwd()+"/"+filename, "wb")
+                file = open(session["chemin"]+"/"+filename, "wb")
                 file.write(content)
                 file.close()
             except:
@@ -51,12 +116,12 @@ def upload_file():
 
 @app.route('/remove/<name>')
 def remove_file(name):
-    os.system("rm -rf "+os.getcwd()+"/"+name)
+    os.system("rm -rf "+session["chemin"]+"/"+name)
     return redirect("/")
 
 @app.route('/download/<name>')
 def download_file(name):
-    return send_file(os.getcwd()+"/"+name, as_attachment = True)
+    return send_file(session["chemin"]+"/"+name, as_attachment = True)
 
 @app.route('/folder_dl/<folder>')
 def download_folder(folder):
@@ -82,7 +147,7 @@ def new_folder():
         folder_name = request.form['folder_input']
         folder_name = secure_filename(folder_name)
         try:
-            os.mkdir(folder_name)
+            os.mkdir(session["chemin"]+"/"+folder_name)
         except:
             print("Erreur")
     return redirect("/")
@@ -103,8 +168,8 @@ def search_file():
         search = request.form['sb']
         res=[]
         res2=[]
-        files = list_files()[0]
-        folders = list_files()[1]
+        files = list_files(session["chemin"])[0]
+        folders = list_files(session["chemin"])[1]
         for i in files:
             if search in i:
                 res.append(i)
@@ -119,19 +184,23 @@ def search_file():
 
 @app.route('/goto/<folder>')
 def goto_folder(folder):
-    if folder in list_files()[1]:
+    if folder in list_files(session["chemin"])[1]:
         try:
-            os.chdir(folder)
-            app.config["UPLOAD_FOLDER"] = os.getcwd()
+            #os.chdir(folder)
+            session["chemin"] = chemin.chdir(session["chemin"], folder)
+            #app.config["UPLOAD_FOLDER"] = os.getcwd()
+            app.config["UPLOAD_FOLDER"] = session["chemin"]
         except:
             print("Erreur, dossier inconnu.")
     return redirect("/")
 
 @app.route('/return')
 def return_folder():
-    if os.getcwd() != default_dir:
-        os.chdir("..")
-        app.config["UPLOAD_FOLDER"] = os.getcwd()
+    #if os.getcwd() != default_dir:
+    if session["chemin"] != default_dir+"/"+session["username"]:
+        #os.chdir("..")
+        session["chemin"] = chemin.previous(session["chemin"])
+        app.config["UPLOAD_FOLDER"] = session["chemin"]
     return redirect("/")
 
 @app.route('/rename/<name>/<newname>')

@@ -79,6 +79,7 @@ body {
 }
 
 #submit_query {
+    display: inline-block;
     border: none;
     background: #1167b8;
     color: white;
@@ -89,15 +90,35 @@ body {
     color: lightgray;
 }
 
-/*
+.logout {
+    text-decoration: none;
+    color: white;
+}
+
 @media (prefers-color-scheme: dark) {
     body {
         background-color: black;
     }
-}
-*/
-@media (prefers-color-scheme: light) {
-    body {
-        background-color: white;
+    .item {
+        border: 1 solid #262626;
+        background-color: #262626;
+    }
+    .item_name {
+        color: white;
+    }
+    .item_name:hover {
+        color: lightgray;
+    }
+    .path {
+        color: white;
+    }
+    .download img {
+        color: white;
+    }
+    .delete img {
+        color: white;
+    }
+    .folder {
+        color: white;
     }
 }

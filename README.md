@@ -2,4 +2,4 @@
 Dépendances :
  - python
  - pip
- - flask (pip install flask)
+ - flask (pip install flask flask-bcrypt)
