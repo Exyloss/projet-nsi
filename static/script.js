@@ -1,5 +1,11 @@
-function FileSelected(e)
+function FileSelected()
 {
-    file = document.getElementById('fu').files[document.getElementById('fu').files.length - 1];
-    document.getElementById('fileName').innerHtml= file.name;
+
+    document.getElementById('file_list').innerHTML = ""
+    file = document.getElementById('getFile').files;
+    if (file != undefined) {
+        for (i=0;i<file.length;i++) {
+            document.getElementById('file_list').innerHTML += "<p>"+file[i]["name"]+"</p>"
+        }
+    }
 }

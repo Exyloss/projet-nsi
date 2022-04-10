@@ -67,6 +67,7 @@ body {
     background: #1167b8;
     color: white;
     margin: 0;
+    height: 30px;
 }
 
 #search_input::placeholder {

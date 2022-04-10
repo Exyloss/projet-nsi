@@ -1,18 +1,5 @@
 import sqlite3
 
-def initialize(db_path):
-    conn = sqlite3.connect(db_path)
-    try:
-        conn.execute("DROP TABLE USERS;")
-    except:
-        print("pas de table users.")
-    conn.execute("CREATE TABLE USERS(NAME CHAR(12) PRIMARY KEY, PASSWORD TEXT);")
-    print("table ok")
-    conn.commit()
-    print("commit ok")
-    conn.close()
-    return None
-
 def insert(name, password, db_path):
     conn = sqlite3.connect(db_path)
     conn.execute("INSERT INTO USERS (NAME, PASSWORD) VALUES ('"+name+"', '"+password+"');")
@@ -55,3 +42,10 @@ def get_password(username, db_path):
     cursor = conn.execute("SELECT PASSWORD FROM USERS WHERE NAME='"+username+"';")
     for i in cursor:
         return i[0]
+
+def change_password(username, new_pw, db_path):
+    conn = sqlite3.connect(db_path)
+    conn.execute("UPDATE USERS SET PASSWORD='"+new_pw+"' WHERE NAME='"+username+"';")
+    conn.commit()
+    conn.close()
+

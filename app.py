@@ -4,6 +4,7 @@ from werkzeug.utils import secure_filename
 import os
 import chemin
 import bdd
+import subprocess
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -17,8 +18,9 @@ app.secret_key = "123"
 
 db_path = os.getcwd()+"/test.db"
 zip_dir = os.getcwd()+"/zips/"
+os.popen("rm "+zip_dir+"*")
 os.chdir("uploads")
-app.config["UPLOAD_FOLDER"] = os.getcwd()
+#app.config["UPLOAD_FOLDER"] = os.getcwd()
 default_dir = os.getcwd()
 
 def correct_username(un):
@@ -43,6 +45,7 @@ def get_files(directory):
     return file_paths
 
 def list_files(chemin):
+    os.chdir(chemin)
     return ( list(filter(os.path.isfile, os.listdir(chemin))), list(filter(os.path.isdir, os.listdir(chemin))) )
 
 @app.route('/')
@@ -50,16 +53,17 @@ def index():
     if 'username' in session:
         path_show = session["chemin"].replace(session["default_dir"], "")
         items = list_files(session["chemin"])
+        print(session["chemin"])
+        print(items)
         if path_show == "": path_show = "/"
-        return render_template('index.html', files=items[0], folders=items[1], path=path_show)
+        return render_template('index.html', files=items[0], folders=items[1], path=path_show, username=session["username"])
     return redirect("/login")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
         pw_hash = bdd.get_password(request.form["username"], db_path)
-        if bcrypt.check_password_hash(pw_hash, request.form["password"]):
-            #session["chemin"] = default_dir
+        if pw_hash != None and bcrypt.check_password_hash(pw_hash, request.form["password"]):
             session["username"] = request.form["username"]
             session["chemin"] = chemin.chdir(default_dir, session["username"])
             session["default_dir"] = chemin.chdir(default_dir, session["username"])
@@ -68,13 +72,13 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
-    global db
     if request.method == "POST":
         if correct_username(request.form["username"]) == True:
             try:
                 os.mkdir(request.form["username"])
             except:
                 print("Erreur lors de la création du dossier.")
+                return render_template("login.html")
             session["username"] = request.form["username"]
             pw_hash = bcrypt.generate_password_hash(request.form["password"]).decode("utf-8")
             bdd.insert(session["username"], pw_hash, db_path)
@@ -88,23 +92,14 @@ def logout():
     session.pop('username', None)
     return redirect("/")
 
-"""
-@app.route('/')
-def index():
-    items = list_files()
-    path_show = os.getcwd().replace(default_dir, "")
-    if path_show == "": path_show = "/"
-    return render_template('index.html', files=items[0], folders=items[1], path=path_show)
-"""
-
 @app.route('/add', methods = ['GET', 'POST'])
 def upload_file():
     if request.method == 'POST':
         files = request.files.getlist("files[]")
         for f in files:
             filename = secure_filename(f.filename)
-            f.save(app.config['UPLOAD_FOLDER']+"/"+filename)
-            file = open(app.config['UPLOAD_FOLDER']+"/"+filename,"rb")
+            f.save(session["chemin"]+"/"+filename)
+            file = open(session["chemin"]+"/"+filename,"rb")
             try:
                 content = file.read()
                 file = open(session["chemin"]+"/"+filename, "wb")
@@ -125,10 +120,17 @@ def download_file(name):
 
 @app.route('/folder_dl/<folder>')
 def download_folder(folder):
-    #files = get_files(folder)
-    os.popen("touch "+zip_dir+folder+".zip")
-    os.popen("zip -r "+zip_dir+folder+".zip "+os.getcwd()+"/"+"folder")
-    return send_file(zip_dir+folder+".zip", as_attachment = True)
+    print(zip_dir)
+    print(session["chemin"]+"/"+folder)
+    #os.popen("touch "+zip_dir+folder+".zip")
+    try:
+        process = subprocess.Popen(["zip","-r",zip_dir+folder+".zip",session["chemin"]+"/"+folder])
+        while process.wait() != 0:
+            continue
+        return send_file(zip_dir+folder+".zip", as_attachment = True)
+    except:
+        print("erreur lors du zipage")
+        return redirect("/")
 
 
 @app.route('/edit/<name>')
@@ -189,18 +191,16 @@ def goto_folder(folder):
             #os.chdir(folder)
             session["chemin"] = chemin.chdir(session["chemin"], folder)
             #app.config["UPLOAD_FOLDER"] = os.getcwd()
-            app.config["UPLOAD_FOLDER"] = session["chemin"]
+            #app.config["UPLOAD_FOLDER"] = session["chemin"]
         except:
             print("Erreur, dossier inconnu.")
     return redirect("/")
 
 @app.route('/return')
 def return_folder():
-    #if os.getcwd() != default_dir:
     if session["chemin"] != default_dir+"/"+session["username"]:
-        #os.chdir("..")
         session["chemin"] = chemin.previous(session["chemin"])
-        app.config["UPLOAD_FOLDER"] = session["chemin"]
+        #app.config["UPLOAD_FOLDER"] = session["chemin"]
     return redirect("/")
 
 @app.route('/rename/<name>/<newname>')
@@ -208,6 +208,26 @@ def rename(name, newname):
     if not os.path.isfile(os.getcwd()+newname):
         os.popen("mv "+name+" "+newname)
     return redirect("/")
+
+@app.route('/account/<name>')
+def account(name):
+    return render_template("account.html", user=name)
+
+@app.route('/change_password/<name>', methods=["POST", "GET"])
+def new_password(name):
+    if request.method == "POST":
+        if bcrypt.check_password_hash(bdd.get_password(name, db_path), request.form["current_password"]):
+            pw_hash = bcrypt.generate_password_hash(request.form["new_password"]).decode("utf-8")
+            bdd.change_password(name, pw_hash, db_path)
+    return redirect("/logout")
+
+@app.route('/delete_account/<name>', methods=["POST", "GET"])
+def delete_account(name):
+    if request.method == "POST":
+        if bcrypt.check_password_hash(bdd.get_password(name, db_path), request.form["password"]):
+            bdd.delete(name, db_path)
+            os.popen("rm -rf "+default_dir+"/"+name)
+    return redirect("/logout")
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug = True, threaded=True)
