@@ -90,6 +90,8 @@ def register():
 @app.route('/logout')
 def logout():
     session.pop('username', None)
+    session.pop('chemin', None)
+    session.pop('default_dir', None)
     return redirect("/")
 
 @app.route('/add', methods = ['GET', 'POST'])
@@ -209,9 +211,9 @@ def rename(name, newname):
         os.popen("mv "+name+" "+newname)
     return redirect("/")
 
-@app.route('/account/<name>')
-def account(name):
-    return render_template("account.html", user=name)
+@app.route('/account')
+def account():
+    return render_template("account.html", user=session["username"])
 
 @app.route('/change_password/<name>', methods=["POST", "GET"])
 def new_password(name):

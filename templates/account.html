@@ -2,11 +2,11 @@
 <html>
     <head>
         <meta name="viewport" content="width=device-width, initial-scale=1">
-        <link rel="stylesheet" href="style.css">
         <meta charset="utf-8">
         <title></title>
     </head>
     <body>
+        <h1>Paramètres de {{ user }}</h1>
         <h2>Nouveau mot de passe</h2>
         <form action="/change_password/{{user}}" method="POST">
             <label>Mot de passe actuel : </label><input type="password" name="current_password" required/><br>
