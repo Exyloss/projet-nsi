@@ -75,7 +75,7 @@ def register():
     if request.method == "POST":
         if correct_username(request.form["username"]) == True:
             try:
-                os.mkdir(request.form["username"])
+                os.mkdir(default_dir+"/"+request.form["username"])
             except:
                 print("Erreur lors de la création du dossier.")
                 return render_template("login.html")
@@ -226,7 +226,7 @@ def delete_account(name):
     if request.method == "POST":
         if bcrypt.check_password_hash(bdd.get_password(name, db_path), request.form["password"]):
             bdd.delete(name, db_path)
-            os.popen("rm -rf "+default_dir+"/"+name)
+            os.system("rm -rf "+default_dir+"/"+name)
     return redirect("/logout")
 
 if __name__ == "__main__":

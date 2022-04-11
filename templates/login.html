@@ -12,14 +12,14 @@
 <body>
     <h1>Se connecter</h1>
     <form action="/login" method="POST">
-        <input placeholder="Nom d'utilisateur" type="text" name="username"/>
-        <input placeholder="Mot de passe" type="password" name="password"/>
+        <input placeholder="Nom d'utilisateur" type="text" name="username" required/>
+        <input placeholder="Mot de passe" type="password" name="password" required/>
         <button type="submit">Se connecter</button>
     </form>
     <h1>S'inscrire</h1>
     <form action="/register" method="POST">
-        <input placeholder="Nom d'utilisateur" type="text" name="username"/>
-        <input placeholder="Mot de passe" type="password" name="password"/>
+        <input placeholder="Nom d'utilisateur" type="text" name="username" required/>
+        <input placeholder="Mot de passe" type="password" name="password" required/>
         <button type="submit">S'inscrire</button>
     </form>
 </body>

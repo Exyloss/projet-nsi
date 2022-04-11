@@ -9,13 +9,13 @@
     <body>
         <h2>Nouveau mot de passe</h2>
         <form action="/change_password/{{user}}" method="POST">
-            <input type="password" name="current_password"/>
-            <input type="password" name="new_password"/>
+            <label>Mot de passe actuel : </label><input type="password" name="current_password" required/><br>
+            <label>Nouveau mot de passe : </label><input type="password" name="new_password" required/>
             <input type="submit"/>
         </form>
         <h2>Supprimer votre compte</h2>
         <form action="/delete_account/{{user}}" method="POST">
-            <input type="password" name="password"/>
+            <label>Mot de passe : </label><input type="password" name="password" required/>
             <input type="submit"/>
         </form>
 
