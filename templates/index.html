@@ -5,20 +5,13 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <script src="{{url_for('static', filename='script.js')}}"></script>
     <title>File Upload</title>
 </head>
 <body>
-    <div id="search">
-    <form action="/search" method="POST">
-        <button id="submit_query"><i class="fa fa-home"></i></button>
-        <input type="text" placeholder="Recherche..." name="sb" id="search_input" />
-        <button type="submit" id="submit_query"><i class="fa fa-search"></i></button>
-        <a id="submit_query" href="/account">{{ username }}</a>
-        <button id="submit_query" type="reset"><a class="fa fa-power-off logout" href="/logout"></a></button>
-    </form>
-    </div>
+    {% include 'nav.html' %}
     <form action = "/add" method = "POST" enctype = "multipart/form-data">
         <input type = "file" name = "files[]" id="getFile" multiple="true" onchange="FileSelected()" required autocomplete="off" />
         <br>
@@ -40,37 +33,65 @@
         </li>
         {% for item in folders %}
         <li class="item">
-            <a style="align: middle;">
-                <img class="folder" src="{{ url_for('static', filename='folder.png') }}"></img>
+            <a style="align: middle; margin-right: 10px;">
+                <span class="material-icons md-15">folder</span>
             </a>
             <a class="item_name" href="/goto/{{ item }}">{{ item }}</a>
-            <a class="delete" href="/remove/{{item}}">
-                <img src="{{ url_for('static', filename='trash.png') }}" width="20px" height="20px"></img>
+            <a class="item_icon">
+                <button class="rename_btn" onclick="show_rename('delete_{{item}}')">
+                    <span class="material-icons md-dark">delete</span>
+                </button>
             </a>
-            <a class="download" href="/folder_dl/{{item}}">
-                <img src="{{ url_for('static', filename='download2.png') }}" width="20px" height="20px"></img>
+            <a class="item_icon" href="/folder_dl/{{item}}">
+                <span class="material-icons md-dark">file_download</span>
             </a>
-            <a class="download" href="/">
-                <img src="{{ url_for('static', filename='rename.png') }}" width="20px" height="20px"></img>
+            <a class="item_icon" >
+                <button onclick="show_rename('rename_{{item}}')" class="rename_btn">
+                    <span class="material-icons md-dark">drive_file_rename_outline</span>
+                </button>
             </a>
         </li>
+        <div class="rename" id="rename_{{item}}">
+            <form action="/rename/{{ item }}" method="POST">
+                <input type="text" name="new_name" placeholder="Nouveau nom" required/>
+                <input type="submit"/>
+            </form>
+        </div>
+        <div class="rename" id="delete_{{item}}">
+            <a href="/remove/{{item}}">Supprimer</a>
+            <a>Annuler</a>
+        </div>
         {% endfor %}
         {% for item in files %}
         <li class="item">
-            <a style="align: middle;">
-                <img class="folder" src="{{ url_for('static', filename='document.png') }}"></img>
+            <a style="align: middle; margin-right: 10px;">
+                <span class="material-icons">description</span>
             </a>
             <a class="item_name" href="/edit/{{ item }}">{{ item }}</a>
-            <a class="delete" href="/remove/{{item}}">
-                <img src="{{ url_for('static', filename='trash.png') }}" width="20px" height="20px"></img>
+            <a>
+                <button class="rename_btn" onclick="show_rename('delete_{{item}}')">
+                    <span class="material-icons md-dark">delete</span>
+                </button>
             </a>
-            <a class="download" href="/download/{{item}}">
-                <img src="{{ url_for('static', filename='download2.png') }}" width="20px" height="20px"></img>
+            <a href="/download/{{item}}">
+                <span class="material-icons">file_download</span>
             </a>
-            <a class="download" href="/">
-                <img src="{{ url_for('static', filename='rename.png') }}" width="20px" height="20px"></img>
+            <a>
+                <button onclick="show_rename('rename_{{item}}')" class="rename_btn">
+                    <span class="material-icons md-dark">drive_file_rename_outline</span>
+                </button>
             </a>
         </li>
+        <div class="rename" id="rename_{{item}}">
+            <form action="/rename/{{ item }}" method="POST">
+                <input type="text" name="new_name" placeholder="Nouveau nom" required/>
+                <input type="submit"/>
+            </form>
+        </div>
+        <div class="rename" id="delete_{{item}}">
+            <a href="/remove/{{item}}">Supprimer</a>
+            <a>Annuler</a>
+        </div>
         {% endfor %}
     </ul>
 </body>

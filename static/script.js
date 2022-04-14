@@ -9,3 +9,8 @@ function FileSelected()
         }
     }
 }
+
+function show_rename(id_div) {
+    elt = document.getElementById(id_div);
+    elt.style.display = "block";
+}

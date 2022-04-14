@@ -1,15 +1,48 @@
+/*@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@400&display=swap');*/
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans:wght@300;400&family=Ubuntu&display=swap');
 body {
     height: 100%;
     width: 100%;
     margin: 0;
+    font-family: 'Ubuntu';
 }
-.delete img {
-    align: middle;
+a {
+    text-decoration: none;
+    color: black;
 }
 
-.download img {
-    align: middle;
+.material-icons.md-18 { font-size: 18px; }
+
+
+.log_reg_form {
+    text-align: center;
 }
+
+.log_reg_form input {
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.log_reg_form button {
+    background-color: #1167b8;
+    border: 1px solid #1167b8;
+    border-radius: 3px;
+    padding: 5px;
+    color: white;
+
+}
+.log_reg_form button:hover {
+    transition: 0.3s;
+    background-color: #04315c;
+    border-color: #04315c;
+}
+
+.logout:hover {
+    color: lightgray;
+}
+
 
 .item_name {
     margin-right: 10px;
@@ -49,11 +82,17 @@ body {
     text-decoration: underline;
 }
 
-.folder {
-    width: 20px;
-    height: 20px;
-    margin: 0 10px 0 0;
-    align: middle;
+
+.rename {
+    transition: 0.3s;
+    background-color: #ebebeb;
+    border-radius: 5px;
+    display: none;
+}
+
+.rename_btn {
+    border: none;
+    background-color: transparent;
 }
 
 #search {
@@ -96,30 +135,49 @@ body {
     color: white;
 }
 
+h4 {
+    margin-bottom: 5px;
+}
+
+.connect-button {
+    margin-top: 10px;
+}
+
 @media (prefers-color-scheme: dark) {
     body {
-        background-color: black;
+        background-color: #111111;
+        color: white;
     }
     .item {
         border: 1 solid #262626;
         background-color: #262626;
     }
+    p {
+        color: white;
+    }
+    a {
+        color: white;
+    }
     .item_name {
         color: white;
+    }
+    .rename {
+        background-color: #262626;
     }
     .item_name:hover {
         color: lightgray;
     }
-    .path {
+    input {
+        background-color: #131313;
+        border: 1px solid black;
         color: white;
     }
-    .download img {
+    button {
+        background-color: #131313;
+        border: 1px solid black;
         color: white;
     }
-    .delete img {
-        color: white;
-    }
-    .folder {
+    span {
         color: white;
     }
 }
