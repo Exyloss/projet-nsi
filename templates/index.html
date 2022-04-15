@@ -60,8 +60,8 @@
             </form>
         </div>
         <div class="rename" id="delete_{{item}}">
-            <a href="/remove/{{item}}">Supprimer</a>
-            <a>Annuler</a>
+            <a href="/remove/{{item}}"><button onclick="show_rename('delete_{{item}}')"><span class="material-icons vert-align">done</span>Supprimer</button></a>
+            <button onclick="show_rename('delete_{{item}}')"><span class="material-icons vert-align">close</span>Annuler</button>
         </div>
         {% endfor %}
         {% for item in files %}
@@ -91,8 +91,8 @@
             </form>
         </div>
         <div class="rename" id="delete_{{item}}">
-            <a href="/remove/{{item}}">Supprimer</a>
-            <a>Annuler</a>
+            <a href="/remove/{{item}}"><button onclick="show_rename('delete_{{item}}')"><span class="material-icons vert-align">done</span>Supprimer</button></a>
+            <button onclick="show_rename('delete_{{item}}')"><span class="material-icons vert-align">close</span>Annuler</button>
         </div>
         {% endfor %}
     </ul>

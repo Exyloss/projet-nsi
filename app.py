@@ -110,19 +110,23 @@ def upload_file():
     écrit les fichiers renseignés avec la méthode POST dans le chemin actuel
     de l'utilisateur.
     """
-    if request.method == 'POST':
-        files = request.files.getlist("files[]")
-        for f in files:
-            filename = secure_filename(f.filename)
-            f.save(session["chemin"]+"/"+filename)
-            file = open(session["chemin"]+"/"+filename,"rb")
-            try:
-                content = file.read()
-                file = open(session["chemin"]+"/"+filename, "wb")
-                file.write(content)
-                file.close()
-            except:
-                print("erreur lors de la lecture du fichier.")
+    if "username" in session:
+        if request.method == 'POST':
+            files = request.files.getlist("files[]")
+            print(files)
+            for f in files:
+                if f.filename == "":
+                    return redirect("/")
+                filename = secure_filename(f.filename)
+                f.save(session["chemin"]+"/"+filename)
+                file = open(session["chemin"]+"/"+filename,"rb")
+                try:
+                    content = file.read()
+                    file = open(session["chemin"]+"/"+filename, "wb")
+                    file.write(content)
+                    file.close()
+                except:
+                    print("erreur lors de la lecture du fichier.")
     return redirect("/")
 
 @app.route('/remove/<name>')
@@ -139,13 +143,18 @@ def download_file(name):
     utilise la fonction send_file intégrée dans flask afin de
     permettre à l'utilisateur final de télécharger le fichier sélectionné.
     """
-    return send_file(session["chemin"]+"/"+name, as_attachment = True)
+    if "username" in session:
+        return send_file(session["chemin"]+"/"+name, as_attachment = True)
+    else:
+        return redirect("/")
 
 @app.route('/folder_dl/<folder>')
 def download_folder(folder):
     """
     Fonction permettant de télécharger un dossier en le zippant.
     """
+    if "username" not in session:
+        return redirect("/")
     try:
         process = subprocess.Popen(["zip","-r",zip_dir+folder+".zip",session["chemin"]+"/"+folder])
         while process.wait() != 0:
@@ -162,6 +171,8 @@ def edit_file(name):
     Fonction ouvrant l'éditeur de texte avec le fichier que
     l'utilisateur souhaite visionner
     """
+    if "username" not in session:
+        return redirect("/")
     try:
         file = open(session["chemin"]+"/"+name, "r")
         file_content = file.read()
@@ -172,6 +183,8 @@ def edit_file(name):
 
 @app.route('/newfolder', methods = ["POST"])
 def new_folder():
+    if "username" not in session:
+        return redirect("/")
     if request.method == "POST":
         folder_name = request.form['folder_input']
         folder_name = secure_filename(folder_name)
@@ -183,6 +196,8 @@ def new_folder():
 
 @app.route('/save/<name>', methods = ["POST"])
 def save_file(name):
+    if "username" not in session:
+        return redirect("/")
     if request.method == "POST":
         content = request.form['ta']
         print(content)
@@ -193,6 +208,8 @@ def save_file(name):
 
 @app.route('/search', methods = ["POST"])
 def search_file():
+    if "username" not in session:
+        return redirect("/")
     if request.method == "POST":
         search = request.form['sb']
         res=[]
@@ -213,6 +230,8 @@ def search_file():
 
 @app.route('/goto/<folder>')
 def goto_folder(folder):
+    if "username" not in session:
+        return redirect("/")
     if folder in list_files(session["chemin"])[1]:
         try:
             session["chemin"] = chemin.chdir(session["chemin"], folder)
@@ -222,12 +241,16 @@ def goto_folder(folder):
 
 @app.route('/return')
 def return_folder():
+    if "username" not in session:
+        return redirect("/")
     if session["chemin"] != default_dir+"/"+session["username"]:
         session["chemin"] = chemin.previous(session["chemin"])
     return redirect("/")
 
 @app.route('/rename/<name>', methods=["POST", "GET"])
 def rename(name):
+    if "username" not in session:
+        return redirect("/")
     if request.method == "POST":
         files = list_files(session["chemin"])
         newname = secure_filename(request.form["new_name"])
@@ -241,6 +264,8 @@ def account():
 
 @app.route('/change_password', methods=["POST", "GET"])
 def new_password():
+    if "username" not in session:
+        return redirect("/")
     if request.method == "POST":
         if bcrypt.check_password_hash(bdd.get_password(session["username"], db_path), request.form["current_password"]):
             pw_hash = bcrypt.generate_password_hash(request.form["new_password"]).decode("utf-8")
@@ -249,6 +274,8 @@ def new_password():
 
 @app.route('/delete_account', methods=["POST", "GET"])
 def delete_account():
+    if "username" not in session:
+        return redirect("/")
     if request.method == "POST":
         if bcrypt.check_password_hash(bdd.get_password(session["username"], db_path), request.form["password"]):
             bdd.delete(session["username"], db_path)

@@ -10,9 +10,9 @@ function FileSelected(file)
 
 function show_rename(id_div) {
     elt = document.getElementById(id_div);
-    if (elt.style.display == "none") {
-        elt.style.display = "block";
-    } else {
+    if (elt.style.display == "block") {
         elt.style.display = "none";
+    } else {
+        elt.style.display = "block";
     }
 }

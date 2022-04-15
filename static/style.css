@@ -49,6 +49,7 @@ label:hover {
 }
 
 .button-icon:hover {
+    transition: 0.3s;
     background-color: #04315c;
 }
 
@@ -75,7 +76,7 @@ label:hover {
 
 .log_reg_form button {
     background-color: #1167b8;
-    border: 1px solid #1167b8;
+    border: 1px solid transparent;
     border-radius: 3px;
     padding: 5px;
     color: white;
@@ -84,7 +85,6 @@ label:hover {
 .log_reg_form button:hover {
     transition: 0.3s;
     background-color: #04315c;
-    border-color: #04315c;
 }
 
 .logout:hover {
