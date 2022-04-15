@@ -141,6 +141,12 @@ label:hover {
     background-color: transparent;
 }
 
+.folder_input {
+    padding: 4px;
+    border: 1px solid #aaaaaa;
+    border-radius: 3px;
+}
+
 #search {
     text-align: center;
     background: #1167b8;

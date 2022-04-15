@@ -255,5 +255,9 @@ def delete_account():
             os.system("rm -rf "+default_dir+"/"+session["username"])
     return redirect("/logout")
 
+@app.errorhandler(404)
+def not_found(e):
+    return "<h1>Erreur, page inconnue</h1>"
+
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=80, debug = True, threaded=True)
