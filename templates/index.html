@@ -13,23 +13,25 @@
 <body>
     {% include 'nav.html' %}
     <form action = "/add" method = "POST" enctype = "multipart/form-data">
-        <input type = "file" name = "files[]" id="getFile" multiple="true" onchange="FileSelected()" required autocomplete="off" />
-        <br>
-        <div id="file_list"></div>
-        <br>
-        <button type="reset">Reset</button>
+        <label for="getFile" class="material-icons md-white">upload_file</label>
+        <input type="file" name="files[]" id="getFile" multiple="true" onchange="FileSelected(document.getElementById('getFile').files)"/>
+        <ul id="file_list"></ul>
+        <button class="margin-left-1" type="reset" onclick="FileSelected([])">Reset</button>
         <button type="submit">Envoyer</button>
     </form>
-    <form action = "/newfolder" method = "POST">
-        <input type = "text" name = "folder_input" placeholder="Nouveau dossier" />
-        <button type = "submit" >Créer</button>
+    <br>
+    <form action="/newfolder" method="POST">
+        <input class="margin-left-1 vert-align" type="text" name="folder_input" placeholder="Nouveau dossier"/>
+        <button type="submit" class="button-icon">
+            <span class="material-icons md-white vert-align">create_new_folder</span>
+        </button>
     </form>
     <ul class="items">
         <li class="item">
-            <p class="path">Emplacement acutel : {{ path }}</p>
+            <p>Emplacement acutel : {{ path }}</p>
         </li>
         <li class="item">
-            <a class="item_name" href="/return">Répertoire précédent</a>
+            <a href="/return">Répertoire précédent</a>
         </li>
         {% for item in folders %}
         <li class="item">

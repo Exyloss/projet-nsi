@@ -57,7 +57,7 @@ def index():
         path_show = session["chemin"].replace(session["default_dir"], "")
         items = list_files(session["chemin"])
         if path_show == "": path_show = "/"
-        return render_template('index.html', files=items[0], folders=items[1], path=path_show, username=session["username"], show_rename="")
+        return render_template('index.html', files=items[0], folders=items[1], path=path_show)
     return redirect("/login")
 
 @app.route("/login", methods=["GET", "POST"])
@@ -166,7 +166,7 @@ def edit_file(name):
         file = open(session["chemin"]+"/"+name, "r")
         file_content = file.read()
         file.close()
-        return render_template('editor.html', file_content=file_content, file_name=name, username=session["username"])
+        return render_template('editor.html', file_content=file_content, file_name=name)
     except:
         return redirect("/")
 
@@ -237,7 +237,7 @@ def rename(name):
 
 @app.route('/account')
 def account():
-    return render_template("account.html", user=session["username"], username=session["username"])
+    return render_template("account.html", user=session["username"])
 
 @app.route('/change_password', methods=["POST", "GET"])
 def new_password():
