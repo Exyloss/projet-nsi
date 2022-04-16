@@ -5,12 +5,10 @@ body {
     margin: 0;
     font-family: 'Ubuntu';
 }
+
 a {
     text-decoration: none;
     color: black;
-}
-button {
-    font-family: 'Ubuntu';
 }
 
 label {
@@ -23,6 +21,7 @@ label {
     margin-top: 1%;
     margin-left: 1%; 
 }
+
 label:hover {
     transition: 0.3s;
     background-color: #04315c;
@@ -128,7 +127,6 @@ label:hover {
     text-decoration: underline;
 }
 
-
 .rename {
     transition: 0.3s;
     background-color: #ebebeb;
@@ -147,7 +145,7 @@ label:hover {
     border-radius: 3px;
 }
 
-#search {
+#search_div {
     text-align: center;
     background: #1167b8;
     padding: 0;
@@ -189,7 +187,7 @@ h4 {
 }
 
 .cancel_modif {
-    border: 1px solid #E61E1E;
+    border: 1px solid transparent;
     background-color: #E61E1E;
     border-radius: 3px;
     padding: 3px;
@@ -201,7 +199,7 @@ h4 {
 }
 
 .save_modif {
-    border: 1px solid #3FBF3F;
+    border: 1px solid transparent;
     background-color: #3FBF3F;
     border-radius: 3px;
     padding: 3px;
@@ -216,14 +214,11 @@ h4 {
     body {
         background-color: #111111;
     }
-    .item {
+    .item, .rename {
         background-color: #262626;
     }
     body, p, a, .item_name, input, span, button {
         color: white;
-    }
-    .rename {
-        background-color: #262626;
     }
     .item_name:hover {
         color: lightgray;
