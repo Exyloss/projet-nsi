@@ -139,6 +139,11 @@ label:hover {
     background-color: transparent;
 }
 
+.rename_btn:hover {
+    transition: 0.3s;
+    color: #333333;
+}
+
 .folder_input {
     padding: 4px;
     border: 1px solid #aaaaaa;
@@ -211,13 +216,13 @@ h4 {
 }
 
 @media (prefers-color-scheme: dark) {
-    body {
+    body, textarea {
         background-color: #111111;
     }
     .item, .rename {
         background-color: #262626;
     }
-    body, p, a, .item_name, input, span, button {
+    body, p, a, .item_name, input, span, button, textarea {
         color: white;
     }
     .item_name:hover {
@@ -225,6 +230,6 @@ h4 {
     }
     input, button {
         background-color: #131313;
-        border: 1px solid black;
+        border-color: black;
     }
 }
