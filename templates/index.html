@@ -12,6 +12,13 @@
 </head>
 <body>
     {% include 'nav.html' %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
     <form action = "/add" method = "POST" enctype = "multipart/form-data">
         <label for="getFile" class="material-icons md-white">upload_file</label>
         <input type="file" name="files[]" id="getFile" multiple="true" onchange="FileSelected(document.getElementById('getFile').files)"/>

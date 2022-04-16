@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, send_file, redirect, session
+from flask import Flask, render_template, request, send_file, redirect, session, flash
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 import os
@@ -113,7 +113,6 @@ def upload_file():
     if "username" in session:
         if request.method == 'POST':
             files = request.files.getlist("files[]")
-            print(files)
             for f in files:
                 if f.filename == "":
                     return redirect("/")
@@ -127,6 +126,7 @@ def upload_file():
                     file.close()
                 except:
                     print("erreur lors de la lecture du fichier.")
+                    flash("Erreur lors de la lecture du fichier.")
     return redirect("/")
 
 @app.route('/remove/<name>')
@@ -161,7 +161,7 @@ def download_folder(folder):
             continue
         return send_file(zip_dir+folder+".zip", as_attachment = True)
     except:
-        print("erreur lors du zipage")
+        flash("Erreur lors du zipage")
         return redirect("/")
 
 
@@ -179,6 +179,7 @@ def edit_file(name):
         file.close()
         return render_template('editor.html', file_content=file_content, file_name=name)
     except:
+        flash("Erreur lors de la lecture du fichier.")
         return redirect("/")
 
 @app.route('/newfolder', methods = ["POST"])
@@ -191,7 +192,7 @@ def new_folder():
         try:
             os.mkdir(session["chemin"]+"/"+folder_name)
         except:
-            print("Erreur")
+            flash("Erreur lors de la création du nouveau dossier.")
     return redirect("/")
 
 @app.route('/save/<name>', methods = ["POST"])
@@ -200,7 +201,6 @@ def save_file(name):
         return redirect("/")
     if request.method == "POST":
         content = request.form['ta']
-        print(content)
         file = open("uploads/"+name, "w")
         file.write(content)
         file.close()
@@ -233,10 +233,10 @@ def goto_folder(folder):
     if "username" not in session:
         return redirect("/")
     if folder in list_files(session["chemin"])[1]:
-        try:
-            session["chemin"] = chemin.chdir(session["chemin"], folder)
-        except:
-            print("Erreur, dossier inconnu.")
+        session["chemin"] = chemin.chdir(session["chemin"], folder)
+    else:
+        print("Erreur, dossier inconnu.")
+        flash("Erreur, dossier inconnu.", "warning")
     return redirect("/")
 
 @app.route('/return')
@@ -256,6 +256,8 @@ def rename(name):
         newname = secure_filename(request.form["new_name"])
         if newname not in files[0] and newname not in files[1]:
             os.popen("mv "+session["chemin"]+"/"+name+" "+session["chemin"]+"/"+newname)
+        else:
+            flash("Erreur, un fichier/dossier ayant comme nom "+name+" existe déjà.")
     return redirect("/")
 
 @app.route('/account')
