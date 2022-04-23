@@ -12,13 +12,13 @@ bcrypt = Bcrypt(app)
 try:
     os.mkdir("uploads")
 except:
-    print("Dossier déjà créé.")
+    print("Dossier uploads déjà créé.")
 
 app.secret_key = "123"
 
 db_path = os.getcwd()+"/test.db"
 zip_dir = os.getcwd()+"/zips/"
-os.popen("rm "+zip_dir+"*")
+os.system("rm "+zip_dir+"* 2>/dev/null")
 os.chdir("uploads")
 default_dir = os.getcwd()
 
@@ -43,7 +43,7 @@ def list_files(chemin):
     """
     chemin: chemin à explorer (str)
     fonction renvoyant un tuple contenant les fichiers en indice 0
-    et les dossiers en indice 1 présents dans le répertoire
+    et les dossiers en indice 1 présents dans le répertoire chemin.
     """
     os.chdir(chemin)
     return ( list(filter(os.path.isfile, os.listdir(chemin))), list(filter(os.path.isdir, os.listdir(chemin))) )
@@ -156,9 +156,7 @@ def download_folder(folder):
     if "username" not in session:
         return redirect("/")
     try:
-        process = subprocess.Popen(["zip","-r",zip_dir+folder+".zip",session["chemin"]+"/"+folder])
-        while process.wait() != 0:
-            continue
+        process = os.system("cd "+session["chemin"]+" && zip -r "+zip_dir+folder+".zip"+" "+folder+" && cd -")
         return send_file(zip_dir+folder+".zip", as_attachment = True)
     except:
         flash("Erreur lors du zipage")
@@ -255,7 +253,7 @@ def rename(name):
         files = list_files(session["chemin"])
         newname = secure_filename(request.form["new_name"])
         if newname not in files[0] and newname not in files[1]:
-            os.popen("mv "+session["chemin"]+"/"+name+" "+session["chemin"]+"/"+newname)
+            os.system("mv "+session["chemin"]+"/"+name+" "+session["chemin"]+"/"+newname)
         else:
             flash("Erreur, un fichier/dossier ayant comme nom "+name+" existe déjà.")
     return redirect("/")
