@@ -11,6 +11,21 @@ a {
     color: black;
 }
 
+.margin-right-10 {
+    margin-right: 10px;
+}
+
+.col-gray {
+    color: gray;
+}
+
+.material-icons {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    vertical-align: middle;
+}
+
 label {
     cursor: pointer;
     color: black;
@@ -114,7 +129,7 @@ label:hover {
     display: flex;
     align-items: center;
     border: 1 solid transparent;
-    background-color: #ebebeb;
+    background-color: #eeeeee;
     border-radius: 5px;
     padding: 5px;
     margin: 2px;
@@ -134,12 +149,12 @@ label:hover {
     display: none;
 }
 
-.rename_btn {
+.ic-btn {
     border: none;
     background-color: transparent;
 }
 
-.rename_btn:hover {
+.ic-btn:hover {
     transition: 0.3s;
     color: #333333;
 }

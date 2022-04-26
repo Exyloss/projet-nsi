@@ -5,6 +5,7 @@ import os
 import chemin
 import bdd
 import subprocess
+from size import convert_octets
 
 app = Flask(__name__)
 bcrypt = Bcrypt(app)
@@ -56,8 +57,9 @@ def index():
     if 'username' in session:
         path_show = session["chemin"].replace(session["default_dir"], "")
         items = list_files(session["chemin"])
+        size_list=[convert_octets(os.path.getsize(session["chemin"]+"/"+i)) for i in items[0]]
         if path_show == "": path_show = "/"
-        return render_template('index.html', files=items[0], folders=items[1], path=path_show)
+        return render_template('index.html', files=items[0], folders=items[1], path=path_show, size_list=size_list)
     return redirect("/login")
 
 @app.route("/login", methods=["GET", "POST"])

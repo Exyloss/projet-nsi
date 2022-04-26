@@ -44,21 +44,21 @@
         {% endif %}
         {% for item in folders %}
         <li class="item">
-            <a style="align: middle; margin-right: 10px;">
-                <span class="material-icons md-15">folder</span>
-            </a>
-            <a class="item_name" href="/goto/{{ item }}">{{ item }}</a>
-            <a class="item_icon">
-                <button class="rename_btn" onclick="show_rename('delete_{{item}}')">
-                    <span class="material-icons md-dark">delete</span>
+            <span class="item_icon vert-align margin-right-10 material-icons md-15">folder</span>
+            <a class="item_name" href="/goto/{{item}}">{{ item }}</a>
+            <a class="item_icon" href="/folder_dl/{{item}}">
+                <button class="ic-btn">
+                    <span class="material-icons md-dark">file_download</span>
                 </button>
             </a>
-            <a class="item_icon" href="/folder_dl/{{item}}">
-                <span class="material-icons md-dark">file_download</span>
-            </a>
             <a class="item_icon" >
-                <button onclick="show_rename('rename_{{item}}')" class="rename_btn">
+                <button onclick="show_rename('rename_{{item}}')" class="ic-btn">
                     <span class="material-icons md-dark">drive_file_rename_outline</span>
+                </button>
+            </a>
+            <a class="item_icon">
+                <button class="ic-btn" onclick="show_rename('delete_{{item}}')">
+                    <span class="material-icons md-dark">delete</span>
                 </button>
             </a>
         </li>
@@ -73,35 +73,36 @@
             <button onclick="show_rename('delete_{{item}}')"><span class="material-icons vert-align">close</span>Annuler</button>
         </div>
         {% endfor %}
-        {% for item in files %}
+        {% for item in range(files|length) %}
         <li class="item">
-            <a style="align: middle; margin-right: 10px;">
-                <span class="material-icons">description</span>
-            </a>
-            <a class="item_name" href="/edit/{{ item }}">{{ item }}</a>
-            <a>
-                <button class="rename_btn" onclick="show_rename('delete_{{item}}')">
-                    <span class="material-icons md-dark">delete</span>
+            <span class="item_icon vert-align margin-right-10 material-icons md-15">description</span>
+            <a class="item_name margin-right-10" href="/edit/{{ files[item] }}">{{ files[item] }}</a>
+            <span class="col-gray">{{ size_list[item] }}</span>
+            <a href="/download/{{files[item]}}">
+                <button class="ic-btn">
+                    <span class="material-icons">file_download</span>
                 </button>
             </a>
-            <a href="/download/{{item}}">
-                <span class="material-icons">file_download</span>
-            </a>
             <a>
-                <button onclick="show_rename('rename_{{item}}')" class="rename_btn">
+                <button onclick="show_rename('rename_{{files[item]}}')" class="ic-btn">
                     <span class="material-icons md-dark">drive_file_rename_outline</span>
                 </button>
             </a>
+            <a>
+                <button class="ic-btn" onclick="show_rename('delete_{{files[item]}}')">
+                    <span class="material-icons md-dark">delete</span>
+                </button>
+            </a>
         </li>
-        <div class="rename" id="rename_{{item}}">
-            <form action="/rename/{{ item }}" method="POST">
+        <div class="rename" id="rename_{{files[item]}}">
+            <form action="/rename/{{ files[item] }}" method="POST">
                 <input type="text" name="new_name" placeholder="Nouveau nom" required/>
                 <input type="submit"/>
             </form>
         </div>
-        <div class="rename" id="delete_{{item}}">
-            <a href="/remove/{{item}}"><button onclick="show_rename('delete_{{item}}')"><span class="material-icons vert-align">done</span>Supprimer</button></a>
-            <button onclick="show_rename('delete_{{item}}')"><span class="material-icons vert-align">close</span>Annuler</button>
+        <div class="rename" id="delete_{{files[item]}}">
+            <a href="/remove/{{files[item]}}"><button onclick="show_rename('delete_{{files[item]}}')"><span class="material-icons vert-align">done</span>Supprimer</button></a>
+            <button onclick="show_rename('delete_{{files[item]}}')"><span class="material-icons vert-align">close</span>Annuler</button>
         </div>
         {% endfor %}
     </ul>
