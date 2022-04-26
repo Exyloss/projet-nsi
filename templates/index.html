@@ -37,10 +37,12 @@
         <li class="item">
             <p>Emplacement acutel : {{ path }}</p>
         </li>
+        <hr>
         {% if path != "/" %}
         <li class="item">
             <a href="/return">Répertoire précédent</a>
         </li>
+        <hr>
         {% endif %}
         {% for item in folders %}
         <li class="item">
@@ -72,6 +74,7 @@
             <a href="/remove/{{item}}"><button onclick="show_rename('delete_{{item}}')"><span class="material-icons vert-align">done</span>Supprimer</button></a>
             <button onclick="show_rename('delete_{{item}}')"><span class="material-icons vert-align">close</span>Annuler</button>
         </div>
+        <hr>
         {% endfor %}
         {% for item in range(files|length) %}
         <li class="item">
@@ -104,6 +107,7 @@
             <a href="/remove/{{files[item]}}"><button onclick="show_rename('delete_{{files[item]}}')"><span class="material-icons vert-align">done</span>Supprimer</button></a>
             <button onclick="show_rename('delete_{{files[item]}}')"><span class="material-icons vert-align">close</span>Annuler</button>
         </div>
+        <hr>
         {% endfor %}
     </ul>
 </body>
