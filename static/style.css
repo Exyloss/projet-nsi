@@ -144,9 +144,6 @@ label:hover {
 }
 
 .rename {
-    transition: 0.3s;
-    background-color: #ebebeb;
-    border-radius: 5px;
     display: none;
 }
 
@@ -235,11 +232,11 @@ h4 {
     body, textarea {
         background-color: #111111;
     }
-    .item, .rename {
-        background-color: #262626;
-    }
     body, p, a, .item_name, input, span, button, textarea {
         color: white;
+    }
+    .ic-btn:hover {
+        color: lightgray;
     }
     .item_name:hover {
         color: lightgray;
