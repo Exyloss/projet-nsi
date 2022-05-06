@@ -5,6 +5,7 @@ import os
 import chemin
 import bdd
 import subprocess
+from files_rec import *
 from size import convert_octets
 
 app = Flask(__name__)
@@ -83,6 +84,9 @@ def login():
 def register():
     if request.method == "POST":
         if correct_username(request.form["username"]) == True:
+            if request.form["password"] == "":
+                flash("Erreur, le champ mot de passe ne peut pas être vide.")
+                return render_template("login.html")
             try:
                 os.mkdir(default_dir+"/"+request.form["username"])
             except:
@@ -94,6 +98,8 @@ def register():
             session["chemin"] = chemin.chdir(default_dir, session["username"])
             session["default_dir"] = chemin.chdir(default_dir, session["username"])
             return redirect("/")
+        else:
+            flash("Nom d'utilisateur déjà utilisé ou invalide.")
     return render_template("login.html")
 
 @app.route('/logout')
@@ -214,8 +220,7 @@ def search_file():
         search = request.form['sb']
         res=[]
         res2=[]
-        files = list_files(session["chemin"])[0]
-        folders = list_files(session["chemin"])[1]
+        [folders, files] = files_rec(session["chemin"], default_dir+"/"+session["username"]+"/")
         for i in files:
             if search in i:
                 res.append(i)
@@ -224,15 +229,23 @@ def search_file():
                 res2.append(i)
         path_show = session["chemin"].replace(session["default_dir"], "")
         if path_show == "": path_show = "/"
-        return render_template('index.html', files=res, folders=res2, path=path_show, username=session["username"])
+        size_list=[convert_octets(os.path.getsize(session["chemin"]+"/"+i)) for i in files]
+        return render_template('index.html', files=res, folders=res2, path=path_show, username=session["username"], size_list=size_list)
     else:
         return redirect("/")
 
-@app.route('/goto/<folder>')
-def goto_folder(folder):
+@app.route('/goto')
+def goto_folder():
+    folder = request.args.get("path")
+    process = os.popen("find "+session["chemin"]+" -type d | sed 's|"+default_dir+"/"+session["username"]+"/||g'")
+    folders = process.read().split("\n")
+    process.close()
+    print(folders)
+    if default_dir+"/"+session["username"] not in session["chemin"]:
+        return redirect("/logout")
     if "username" not in session:
         return redirect("/")
-    if folder in list_files(session["chemin"])[1]:
+    if folder in folders:
         session["chemin"] = chemin.chdir(session["chemin"], folder)
     else:
         print("Erreur, dossier inconnu.")
@@ -289,4 +302,4 @@ def not_found(e):
     return "<h1>Erreur, page inconnue</h1>"
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=80, debug = True, threaded=True)
+    app.run(debug = True, threaded=True)

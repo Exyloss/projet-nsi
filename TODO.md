@@ -1,2 +1,0 @@
- - Site responsive
- - Thème sombre automatique

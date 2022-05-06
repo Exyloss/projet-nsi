@@ -11,14 +11,23 @@
 </head>
 <body>
     <form action="/login" method="POST" class="log_reg_form">
+        <span style="color: red;">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+        </span>
         <h1>Se connecter</h1>
         <div>
-        <span class="material-icons" style="display: inline-block; vertical-align: middle;">person</span>
-        <input placeholder="Nom d'utilisateur" type="text" name="username" required/><br>
+            <span class="material-icons" style="display: inline-block; vertical-align: middle;">person</span>
+            <input placeholder="Nom d'utilisateur" type="text" name="username" required/><br>
         </div>
         <div>
-        <span class="material-icons" style="display: inline-block; vertical-align: middle;">lock</span>
-        <input placeholder="Mot de passe" type="password" name="password" required/><br>
+            <span class="material-icons" style="display: inline-block; vertical-align: middle;">lock</span>
+            <input placeholder="Mot de passe" type="password" name="password" required/><br>
         </div>
         <button type="submit" class="connect-button" size="100" maxlength="100">Se connecter</button>
     </form>
