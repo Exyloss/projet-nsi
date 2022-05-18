@@ -48,7 +48,7 @@
         <li class="item">
             <span class="item_icon vert-align margin-right-10 material-icons md-15">folder</span>
             <a class="item_name" href="/goto?path={{ item }}">{{ item }}</a>
-            <a class="item_icon" href="/folder_dl/{{ item }}">
+            <a class="item_icon" href="/folder_dl?path={{ item }}">
                 <button class="ic-btn">
                     <span class="material-icons md-dark">file_download</span>
                 </button>
@@ -87,7 +87,7 @@
             <span class="item_icon vert-align margin-right-10 material-icons md-15">description</span>
             <a class="item_name margin-right-10" href="/edit/{{ files[item] }}">{{ files[item] }}</a>
             <span class="col-gray">{{ size_list[item] }}</span>
-            <a href="/download/{{files[item]}}">
+            <a href="/download?path={{files[item]}}">
                 <button class="ic-btn">
                     <span class="material-icons">file_download</span>
                 </button>

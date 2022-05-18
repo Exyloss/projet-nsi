@@ -40,6 +40,8 @@ def correct_username(un):
             return "Erreur, vous avez saisi des caractères invalides."
     return True
 
+def file_ext(filename):
+    return filename.split(".")[-1]
 
 def list_files(chemin):
     """
@@ -145,27 +147,30 @@ def remove_file(name):
     os.system("rm -rf "+session["chemin"]+"/"+name)
     return redirect("/")
 
-@app.route('/download/<name>')
-def download_file(name):
+@app.route('/download')
+def download_file():
     """
     utilise la fonction send_file intégrée dans flask afin de
     permettre à l'utilisateur final de télécharger le fichier sélectionné.
     """
+    file = request.args.get("path")
     if "username" in session:
-        return send_file(session["chemin"]+"/"+name, as_attachment = True)
+        return send_file(session["chemin"]+"/"+file, as_attachment = True)
     else:
         return redirect("/")
 
-@app.route('/folder_dl/<folder>')
-def download_folder(folder):
+@app.route('/folder_dl')
+def download_folder():
     """
     Fonction permettant de télécharger un dossier en le zippant.
     """
+    folder = request.args.get("path")
+    folder_name = secure_filename(folder)
     if "username" not in session:
         return redirect("/")
     try:
-        process = os.system("cd "+session["chemin"]+" && zip -r "+zip_dir+folder+".zip"+" "+folder+" && cd -")
-        return send_file(zip_dir+folder+".zip", as_attachment = True)
+        process = os.system("cd "+session["chemin"]+" && zip -r "+zip_dir+folder_name+".zip"+" "+folder+" && cd -")
+        return send_file(zip_dir+folder_name+".zip", as_attachment = True)
     except:
         flash("Erreur lors du zipage")
         return redirect("/")
@@ -179,13 +184,16 @@ def edit_file(name):
     """
     if "username" not in session:
         return redirect("/")
-    try:
-        file = open(session["chemin"]+"/"+name, "r")
-        file_content = file.read()
-        file.close()
-        return render_template('editor.html', file_content=file_content, file_name=name)
-    except:
-        flash("Erreur lors de la lecture du fichier.")
+    if file_ext(name) not in ["jpg", "png", "pdf", "mp4", "mp3", "svg", "zip"]:
+        try:
+            file = open(session["chemin"]+"/"+name, "r")
+            file_content = file.read()
+            file.close()
+            return render_template('editor.html', file_content=file_content, file_name=name)
+        except:
+            flash("Erreur lors de la lecture du fichier.")
+            return redirect("/")
+    else:
         return redirect("/")
 
 @app.route('/newfolder', methods = ["POST"])
@@ -207,7 +215,7 @@ def save_file(name):
         return redirect("/")
     if request.method == "POST":
         content = request.form['ta']
-        file = open("uploads/"+name, "w")
+        file = open(session["chemin"]+"/"+name, "w")
         file.write(content)
         file.close()
         return render_template('editor.html', file_name=name, file_content=content)
