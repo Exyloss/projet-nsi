@@ -245,15 +245,15 @@ def search_file():
 @app.route('/goto')
 def goto_folder():
     folder = request.args.get("path")
-    process = os.popen("find "+session["chemin"]+" -type d | sed 's|"+default_dir+"/"+session["username"]+"/||g'")
+    process = os.popen("find "+session["chemin"]+" -type d")
     folders = process.read().split("\n")
     process.close()
-    print(folders)
+    folders.pop()
     if default_dir+"/"+session["username"] not in session["chemin"]:
         return redirect("/logout")
     if "username" not in session:
         return redirect("/")
-    if folder in folders:
+    if session["chemin"]+"/"+folder in folders:
         session["chemin"] = chemin.chdir(session["chemin"], folder)
     else:
         print("Erreur, dossier inconnu.")
