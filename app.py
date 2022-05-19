@@ -237,7 +237,7 @@ def search_file():
                 res2.append(i)
         path_show = session["chemin"].replace(session["default_dir"], "")
         if path_show == "": path_show = "/"
-        size_list=[convert_octets(os.path.getsize(session["chemin"]+"/"+i)) for i in files]
+        size_list=[convert_octets(os.path.getsize(session["chemin"]+"/"+i)) for i in res]
         return render_template('index.html', files=res, folders=res2, path=path_show, username=session["username"], size_list=size_list)
     else:
         return redirect("/")
