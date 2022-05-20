@@ -65,7 +65,7 @@
             </a>
         </li>
         <div class="rename" id="rename_{{item}}">
-            <form action="/rename/{{ item }}" method="POST">
+            <form action="/rename?path={{ item }}" method="POST">
                 <input type="text" name="new_name" placeholder="Nouveau nom" required/>
                 <input type="submit"/>
             </form>
@@ -85,7 +85,7 @@
         {% for item in range(files|length) %}
         <li class="item">
             <span class="item_icon vert-align margin-right-10 material-icons md-15">description</span>
-            <a class="item_name margin-right-10" href="/edit/{{ files[item] }}">{{ files[item] }}</a>
+            <a class="item_name margin-right-10" href="/edit?path={{ files[item] }}">{{ files[item] }}</a>
             <span class="col-gray">{{ size_list[item] }}</span>
             <a href="/download?path={{files[item]}}">
                 <button class="ic-btn">
@@ -104,7 +104,7 @@
             </a>
         </li>
         <div class="rename" id="rename_{{files[item]}}">
-            <form action="/rename/{{ files[item] }}" method="POST">
+            <form action="/rename?path={{ files[item] }}" method="POST">
                 <input type="text" name="new_name" placeholder="Nouveau nom" required/>
                 <input type="submit"/>
             </form>

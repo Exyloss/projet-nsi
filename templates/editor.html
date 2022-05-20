@@ -11,7 +11,7 @@
     </head>
     <body>
     {% include 'nav.html' %}
-    <form method="post" action="/save/{{ file_name }}">
+    <form method="post" action="/save?path={{ file_name }}">
         <div style="text-align: center;">
             <p for="msg">{{ file_name }}</p>
             <textarea id="content" name="ta">{{ file_content }}</textarea><br>

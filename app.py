@@ -84,6 +84,10 @@ def login():
 
 @app.route("/register", methods=["GET", "POST"])
 def register():
+    """
+    Fonction permettant de créer un dossier pour le nouvel utilisateur et de l'ajouter
+    à la base de données
+    """
     if request.method == "POST":
         if correct_username(request.form["username"]) == True:
             if request.form["password"] == "":
@@ -139,11 +143,12 @@ def upload_file():
                     flash("Erreur lors de la lecture du fichier.")
     return redirect("/")
 
-@app.route('/remove/<name>')
-def remove_file(name):
+@app.route('/remove')
+def remove_file():
     """
     Supprime les dossiers/fichiers à l'aide de la command unix rm.
     """
+    name = request.args.get("path")
     os.system("rm -rf "+session["chemin"]+"/"+name)
     return redirect("/")
 
@@ -176,12 +181,13 @@ def download_folder():
         return redirect("/")
 
 
-@app.route('/edit/<name>')
-def edit_file(name):
+@app.route('/edit')
+def edit_file():
     """
     Fonction ouvrant l'éditeur de texte avec le fichier que
     l'utilisateur souhaite visionner
     """
+    name = request.args.get("path")
     if "username" not in session:
         return redirect("/")
     if file_ext(name) not in ["jpg", "png", "pdf", "mp4", "mp3", "svg", "zip"]:
@@ -198,6 +204,10 @@ def edit_file(name):
 
 @app.route('/newfolder', methods = ["POST"])
 def new_folder():
+    """
+    Crée un nouveau dossier en récupérant le contenu
+    de l'input nommé 'folder_input'
+    """
     if "username" not in session:
         return redirect("/")
     if request.method == "POST":
@@ -209,8 +219,13 @@ def new_folder():
             flash("Erreur lors de la création du nouveau dossier.")
     return redirect("/")
 
-@app.route('/save/<name>', methods = ["POST"])
-def save_file(name):
+@app.route('/save', methods = ["POST"])
+def save_file():
+    """
+    Réécrit le fichier renseigné dans le paramètre avec le contenu
+    présent dans la zone de texte 'ta'
+    """
+    name = request.args.get("path")
     if "username" not in session:
         return redirect("/")
     if request.method == "POST":
@@ -222,6 +237,10 @@ def save_file(name):
 
 @app.route('/search', methods = ["POST"])
 def search_file():
+    """
+    Fonction effectuant une recherche récursive dans les dossiers de l'utilisateur
+    à l'aide de la commande LINUX 'find'
+    """
     if "username" not in session:
         return redirect("/")
     if request.method == "POST":
@@ -244,6 +263,11 @@ def search_file():
 
 @app.route('/goto')
 def goto_folder():
+    """
+    Fonction déplaçant le chemin de l'utilisateur vers
+    le dossier renseigné dans le paramètre 'path' de la
+    requête
+    """
     folder = request.args.get("path")
     process = os.popen("find "+session["chemin"]+" -type d")
     folders = process.read().split("\n")
@@ -262,14 +286,22 @@ def goto_folder():
 
 @app.route('/return')
 def return_folder():
+    """
+    Fonction remontant l'arborescence de 1 dossier
+    """
     if "username" not in session:
         return redirect("/")
-    if session["chemin"] != default_dir+"/"+session["username"]:
+    if session["chemin"] != default_dir+"/"+session["username"] and default_dir+"/"+session["username"] in session["chemin"]:
         session["chemin"] = chemin.previous(session["chemin"])
     return redirect("/")
 
-@app.route('/rename/<name>', methods=["POST", "GET"])
-def rename(name):
+@app.route('/rename', methods=["POST", "GET"])
+def rename():
+    """
+    Fonction renommant un fichier avec le texte contenu dans
+    l'input nommé 'new_name'
+    """
+    name = request.args.get("path")
     if "username" not in session:
         return redirect("/")
     if request.method == "POST":
@@ -283,10 +315,21 @@ def rename(name):
 
 @app.route('/account')
 def account():
+    """
+    fonction redirigeant l'utilisateur vers la page
+    de ses paramètres
+    """
     return render_template("account.html", user=session["username"])
 
 @app.route('/change_password', methods=["POST", "GET"])
 def new_password():
+    """
+    Fonction permettant de changer le mot de passe de l'utilisateur
+    en fonction de son 'username' dans sa session.
+    Cette fonction hashe le nouveau mot de passe de l'utilisateur et
+    le remplace dans la base de données avec la fonction change_password
+    du script bdd.py.
+    """
     if "username" not in session:
         return redirect("/")
     if request.method == "POST":
@@ -297,6 +340,11 @@ def new_password():
 
 @app.route('/delete_account', methods=["POST", "GET"])
 def delete_account():
+    """
+    Fonction supprimant l'utilisateur de la base de données et
+    son dossier personnel présent sur le serveur à l'aide de la
+    commmande rm. Cette fonction déconnecte l'utilisateur.
+    """
     if "username" not in session:
         return redirect("/")
     if request.method == "POST":
@@ -307,6 +355,11 @@ def delete_account():
 
 @app.errorhandler(404)
 def not_found(e):
+    """
+    Fonction renvoyant 'Erreur, page inconnue'
+    si la route renseignée par l'utilisateur
+    n'existe pas.
+    """
     return "<h1>Erreur, page inconnue</h1>"
 
 if __name__ == "__main__":
