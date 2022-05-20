@@ -48,4 +48,3 @@ def change_password(username, new_pw, db_path):
     conn.execute("UPDATE USERS SET PASSWORD='"+new_pw+"' WHERE NAME='"+username+"';")
     conn.commit()
     conn.close()
-
