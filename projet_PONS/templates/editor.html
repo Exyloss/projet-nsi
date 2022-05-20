@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+        <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+        <!--<script src="{{url_for('static', filename='script.js')}}"></script>-->
+        <meta charset="utf-8">
+        <title>Éditeur</title>
+    </head>
+    <body>
+    {% include 'nav.html' %}
+    <form method="post" action="/save?path={{ file_name }}">
+        <div style="text-align: center;">
+            <p for="msg">{{ file_name }}</p>
+            <textarea id="content" name="ta">{{ file_content }}</textarea><br>
+        </div>
+        <div align="center">
+            <button type="submit" class="save_modif">Sauvegarder</button>
+            <button class="cancel_modif"><a href="/">Annuler</a></button>
+        </div>
+    </form>
+    </body>
+</html>

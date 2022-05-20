@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="{{url_for('static', filename='script.js')}}"></script>
+    <title>File Upload</title>
+</head>
+<body>
+    {% include 'nav.html' %}
+    {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+        {% endif %}
+    {% endwith %}
+    <form action = "/add" method = "POST" enctype = "multipart/form-data">
+        <label for="getFile" class="material-icons md-white">upload_file</label>
+        <input type="file" name="files[]" id="getFile" multiple="true" onchange="FileSelected(document.getElementById('getFile').files)"/>
+        <ul id="file_list"></ul>
+        <button class="margin-left-1" type="reset" onclick="FileSelected([])">Reset</button>
+        <button type="submit">Envoyer</button>
+    </form>
+    <br>
+    <form action="/newfolder" method="POST">
+        <input class="margin-left-1 vert-align folder_input" type="text" name="folder_input" placeholder="Nouveau dossier"/>
+        <button type="submit" class="button-icon">
+            <span class="material-icons md-white vert-align">create_new_folder</span>
+        </button>
+    </form>
+    <ul class="items">
+        <li class="item">
+            <p>{{ path }}</p>
+        </li>
+        <hr>
+        {% if path != "/" %}
+        <li class="item">
+            <a href="/return" class="item_name">Répertoire précédent</a>
+        </li>
+        <hr>
+        {% endif %}
+        {% for item in folders %}
+        <li class="item">
+            <span class="item_icon vert-align margin-right-10 material-icons md-15">folder</span>
+            <a class="item_name" href="/goto?path={{ item }}">{{ item }}</a>
+            <a class="item_icon" href="/folder_dl?path={{ item }}">
+                <button class="ic-btn">
+                    <span class="material-icons md-dark">file_download</span>
+                </button>
+            </a>
+            <a class="item_icon" >
+                <button onclick="show_rename('rename_{{item}}')" class="ic-btn">
+                    <span class="material-icons md-dark">drive_file_rename_outline</span>
+                </button>
+            </a>
+            <a class="item_icon">
+                <button class="ic-btn" onclick="show_rename('delete_{{item}}')">
+                    <span class="material-icons md-dark">delete</span>
+                </button>
+            </a>
+        </li>
+        <div class="rename" id="rename_{{item}}">
+            <form action="/rename?path={{ item }}" method="POST">
+                <input type="text" name="new_name" placeholder="Nouveau nom" required/>
+                <input type="submit"/>
+            </form>
+        </div>
+        <div class="rename" id="delete_{{item}}">
+            <a href="/remove/{{item}}">
+                <button onclick="show_rename('delete_{{item}}')">
+                    <span class="material-icons vert-align">done</span>Supprimer
+                </button>
+            </a>
+            <button onclick="show_rename('delete_{{item}}')">
+                <span class="material-icons vert-align">close</span>Annuler
+            </button>
+        </div>
+        <hr>
+        {% endfor %}
+        {% for item in range(files|length) %}
+        <li class="item">
+            <span class="item_icon vert-align margin-right-10 material-icons md-15">description</span>
+            <a class="item_name margin-right-10" href="/edit?path={{ files[item] }}">{{ files[item] }}</a>
+            <span class="col-gray">{{ size_list[item] }}</span>
+            <a href="/download?path={{files[item]}}">
+                <button class="ic-btn">
+                    <span class="material-icons">file_download</span>
+                </button>
+            </a>
+            <a>
+                <button onclick="show_rename('rename_{{files[item]}}')" class="ic-btn">
+                    <span class="material-icons md-dark">drive_file_rename_outline</span>
+                </button>
+            </a>
+            <a>
+                <button class="ic-btn" onclick="show_rename('delete_{{files[item]}}')">
+                    <span class="material-icons md-dark">delete</span>
+                </button>
+            </a>
+        </li>
+        <div class="rename" id="rename_{{files[item]}}">
+            <form action="/rename?path={{ files[item] }}" method="POST">
+                <input type="text" name="new_name" placeholder="Nouveau nom" required/>
+                <input type="submit"/>
+            </form>
+        </div>
+        <div class="rename" id="delete_{{files[item]}}">
+            <a href="/remove/{{files[item]}}">
+                <button onclick="show_rename('delete_{{files[item]}}')">
+                    <span class="material-icons vert-align">done</span>Supprimer
+                </button>
+            </a>
+            <button onclick="show_rename('delete_{{files[item]}}')">
+                <span class="material-icons vert-align">close</span>Annuler
+            </button>
+        </div>
+        <hr>
+        {% endfor %}
+    </ul>
+</body>
+</html>
