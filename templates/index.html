@@ -71,7 +71,7 @@
             </form>
         </div>
         <div class="rename" id="delete_{{item}}">
-            <a href="/remove/{{item}}">
+            <a href="/remove?path={{item}}">
                 <button onclick="show_rename('delete_{{item}}')">
                     <span class="material-icons vert-align">done</span>Supprimer
                 </button>
@@ -110,7 +110,7 @@
             </form>
         </div>
         <div class="rename" id="delete_{{files[item]}}">
-            <a href="/remove/{{files[item]}}">
+            <a href="/remove?path={{files[item]}}">
                 <button onclick="show_rename('delete_{{files[item]}}')">
                     <span class="material-icons vert-align">done</span>Supprimer
                 </button>
